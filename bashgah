@@ -1,0 +1,150 @@
+import pymysql
+
+
+
+#-----------------------------------------------------------------------------
+connection = pymysql.connect(
+    host='localhost',
+    user="root",
+    password="taharashidi1389/@#$",
+    database="bashgah"
+)
+
+#-----------------------------------------------------------------------------
+names=[]
+families=[]
+purchases1=[]
+phone_numbers=[]
+customers_ides=[]
+
+
+try:
+
+            
+    with connection.cursor() as cursor:
+        cursor.execute("select * from customers")
+        result=cursor.fetchall()
+        for i in result:
+            names.append(i[1])
+            families.append(i[2])
+            purchases1.append(i[3])
+            phone_numbers.append(i[5])
+            customers_ides.append(i[0])
+            connection.commit()
+        
+
+finally:
+    print("---------------------------------------------------------")
+#-----------------------------------------------------------------------------
+edame = "yes"
+
+
+while edame == 'yes':
+    print("dorood bar shoma kari ke mikhahid anjam dahid ra entekhab konid\n(1-payane kar\n2-afzoodan moshtary\n3-didan bishtarin kharid\n4-jadval rotbe bandi bishtarin kharid ha\n5-" \
+    "hazf moshtary\n)")
+    voroodi=str(input())
+    
+#-----------------------------------------------------------------------------
+    if voroodi == "payane kar":
+        print("be salamat")
+        connection.close()
+        break
+
+#-----------------------------------------------------------------------------
+
+    if voroodi == "afzoodan moshtary":
+        edame_faree = "yes"
+        while edame_faree == "yes":
+            try:
+                with connection.cursor() as cursor1:
+                    name=str(input("name moshtary ra vared konid: ")),
+                    last_name=str(input("namekhanevdegie moshtary ra vared konid: ")),
+                    purchases=int(input("majmooe kharid haye moshtary ravared konid: ")),
+                    birth_day=str(input("tarikhe tvalod ra vared konid(yyyy-mm-dd): ")),
+                    numbers=int(input("shomare telephone ra vared konid: "))
+                    sql1="insert into customers values(default, %s , %s , %s , %s , %s )"
+                    cursor1.execute(sql1, (name,last_name,purchases,birth_day,numbers)
+                    )
+                    connection.commit()
+                    cursor1.execute("select * from customers")
+                    result1=cursor1.fetchall()
+                    parking=result1[-1]
+                    names.append(parking[1])
+                    families.append(parking[2])
+                    purchases1.append(parking[3])
+                    phone_numbers.append(parking[5])
+                    customers_ides.append(parking[0])
+                    connection.commit()
+                    print("sabt moshtary ba movafaghiat anjam shod")
+
+            finally:
+                print("----------------------------------------------------------")
+
+            edame_faree=str(input("mikhahid edame dahid?(yes/no): "))
+            if edame_faree == "no":
+                print("bazgasht be khane\n------------------------------------")
+            else:
+                continue
+#------------------------------------------------------------------------------
+
+    elif voroodi == "didan bishtarin kharid":
+        edame_faree2 = "yes"
+        while edame_faree2 == "yes":
+            max_purchase=-9999999
+
+            for max in purchases1:
+                if max > max_purchase:
+                    max_purchase=max
+            jaygah=purchases1.index(max_purchase)
+            moshtary_gold=names[jaygah]
+            moshtary_gold1=families[jaygah]
+            moshtary_gold2=phone_numbers[jaygah]
+            print(f"bishtarin kharid brabar ba {max_purchase} ast va motealegh be {moshtary_gold} {moshtary_gold1} ba shomare telephone {moshtary_gold2} ast.")
+
+
+            edame_faree2=str(input("mikhahid edame dahid?(yes/no): "))
+            if edame_faree2 == "no":
+                print("bazgasht be khane\n------------------------------------")
+            else:
+                continue
+#------------------------------------------------------------------------------
+    elif voroodi == "jadval rotbe bandi bishtarin kharid ha":
+        edame_faree3 = "yes"
+        while edame_faree3 == "yes":
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("select first_name,last_name from customers order by purchases desc")
+                    jadval=cursor.fetchall()
+                    connection.commit()
+                    print(jadval)
+
+            finally:
+                print("------------------------------------------------------")
+            edame_faree3=str(input("mikhahid edame dahid?(yes/no): "))
+            if edame_faree3 == "no":
+                print("bazgasht be khane\n------------------------------------")
+            else:
+                continue
+#------------------------------------------------------------------------------
+    elif voroodi == "hazf moshtary":
+        edame_faree4 = "yes"
+        while edame_faree4=="yes":
+            name=str(input("name moshtary ra vared konid: "))
+            family=str(input("name khanevadegie moshtary ra vared konid: "))
+            phone_number=int(input("shomare telephone oshtary ra vared konid: "))
+            try:
+                with connection.cursor() as cursor_hazf:
+                    sql23="delete from customers where first_name=%s and last_name=%s and phone_number=%s "
+                    cursor_hazf.execute(sql23 ,(name,family,phone_number))
+
+                print("moshtary hazf shod")
+
+            finally:
+                print("-------------------------------------------------------")
+            edame_faree4=str(input("mikhahid edame dahid?(yes/no): "))
+            if edame_faree4 == "no":
+                print("bazgasht be khane\n------------------------------------")
+            else:
+                continue
+            
+#-----------------------------------------------------------------------------
